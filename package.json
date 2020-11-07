@@ -1,0 +1,24 @@
+{
+  "name": "nodejs-mentoring",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "npm test",
+    "task1": "nodemon src/task1.js",
+    "task2": "nodemon src/task2.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahlinist/nodejs-mentoring.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ahlinist/nodejs-mentoring/issues"
+  },
+  "homepage": "https://github.com/ahlinist/nodejs-mentoring#readme",
+  "dependencies": {
+    "csvtojson": "^2.0.10"
+  }
+}
