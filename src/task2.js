@@ -42,10 +42,15 @@ const csvSource = ".csv/source.csv";
 const csvTarget = ".csv/target.csv";
 
 const init = () => {
-  if (existsSync(csvTarget)) {
-    unlinkSync(csvTarget);
+  try {
+    if (existsSync(csvTarget)) {
+      unlinkSync(csvTarget);
+    }
+  } catch (error) {
+    console.error(error);
   }
 }
+
 
 const composeJsonString = text => {
   const values = text.split(",");
@@ -57,29 +62,38 @@ const composeJsonString = text => {
   return `${JSON.stringify(obj)}\n`;
 };
 
+const writeLine = (line) => {
+  const data = composeJsonString(line);
+  const writeStream = createWriteStream(csvTarget, {flags: 'a'});
+  writeStream.once('open', () => {
+    writeStream.write(data);
+    writeStream.end();
+  });
+  writeStream.on('error', function(error) {
+    console.error(error);
+    writeStream.end();
+});
+};
+
+const openReadStream = (path) => {
+  const stream = createReadStream(path);
+  stream.on('error', function(error) {
+    console.error(error);
+  });
+  return stream;
+};
+
 async function processLineByLine() {
-  const fileStream = createReadStream(csvSource);
-  const rl = readline.createInterface({input: fileStream});
+  const fileStream = openReadStream(csvSource);
+  const lines = readline.createInterface({input: fileStream});
   let firstRun = true;
 
-  for await (const line of rl) {
+  for await (const line of lines) {
     if (firstRun === true) {
       firstRun = false;
       continue;
     } 
-
-    const data = composeJsonString(line);
-    const writeStream = createWriteStream(csvTarget, {flags: 'a'});
-    writeStream.once('open', () => {
-      writeStream.write(data);
-      writeStream.end();
-    }); 
-
-
-
-
-
-    //TODO: log errors!
+    writeLine(line);
   }
 }
 
