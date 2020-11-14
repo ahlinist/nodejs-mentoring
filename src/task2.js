@@ -1,3 +1,6 @@
+/*
+The solution with input fully loaded to memory
+
 const { writeFile } = require('fs');
 const csv = require('csvtojson');
 const csvSource = ".csv/source.csv";
@@ -29,3 +32,56 @@ csv()
   .then(formatEntries)
   .then(stringifyOutput)
   .then(writeToFile);
+
+*/
+
+const { createReadStream, createWriteStream, unlinkSync, existsSync } = require('fs');
+const readline = require('readline');
+
+const csvSource = ".csv/source.csv";
+const csvTarget = ".csv/target.csv";
+
+const init = () => {
+  if (existsSync(csvTarget)) {
+    unlinkSync(csvTarget);
+  }
+}
+
+const composeJsonString = text => {
+  const values = text.split(",");
+  const obj = {
+    book: values[0],
+    author: values[1],
+    price: values[3]
+  };
+  return `${JSON.stringify(obj)}\n`;
+};
+
+async function processLineByLine() {
+  const fileStream = createReadStream(csvSource);
+  const rl = readline.createInterface({input: fileStream});
+  let firstRun = true;
+
+  for await (const line of rl) {
+    if (firstRun === true) {
+      firstRun = false;
+      continue;
+    } 
+
+    const data = composeJsonString(line);
+    const writeStream = createWriteStream(csvTarget, {flags: 'a'});
+    writeStream.once('open', () => {
+      writeStream.write(data);
+      writeStream.end();
+    }); 
+
+
+
+
+
+    //TODO: log errors!
+  }
+}
+
+init();
+processLineByLine();
