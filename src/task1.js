@@ -5,3 +5,4 @@ const reverse = text => text.split("").reverse().join("");
 const printReverse = input => console.log(`${reverse(normalizeString(input))}\n`);
 
 stdin.addListener("data", printReverse);
+console.log("Awaiting for input...");
