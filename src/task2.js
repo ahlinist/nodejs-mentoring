@@ -35,8 +35,8 @@ csv()
 
 */
 
-const { createReadStream, createWriteStream, unlinkSync, existsSync } = require('fs');
-const readline = require('readline');
+import readline from "readline";
+import { createReadStream, createWriteStream, unlinkSync, existsSync } from "fs";
 
 const csvSource = ".csv/source.csv";
 const csvTarget = ".csv/target.csv";
@@ -50,7 +50,6 @@ const init = () => {
     console.error(error);
   }
 }
-
 
 const composeJsonString = text => {
   const values = text.split(",");
