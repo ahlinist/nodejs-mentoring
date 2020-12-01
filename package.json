@@ -6,8 +6,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "npm test",
-    "task1": "nodemon --exec babel-node src/task1.js",
-    "task2": "nodemon --exec babel-node src/task2.js"
+    "task1": "nodemon --exec babel-node src/module1/task1.js",
+    "task2": "nodemon --exec babel-node src/module1/task2.js"
   },
   "repository": {
     "type": "git",

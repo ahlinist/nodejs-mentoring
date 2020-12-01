@@ -2,8 +2,8 @@ import { createReadStream, createWriteStream, unlinkSync, existsSync } from "fs"
 import csv from "csvtojson";
 import { Transform } from "stream";
 
-const csvSource = ".csv/source.csv";
-const csvTarget = ".csv/target.csv";
+const csvSource = "src/module1/.csv/source.csv";
+const csvTarget = "src/module1/.csv/target.csv";
 
 const init = () => {
   try {
