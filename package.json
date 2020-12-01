@@ -7,7 +7,8 @@
   "scripts": {
     "test": "npm test",
     "task1": "nodemon --exec babel-node src/module1/task1.js",
-    "task2": "nodemon --exec babel-node src/module1/task2.js"
+    "task2": "nodemon --exec babel-node src/module1/task2.js",
+    "task3": "nodemon --exec babel-node src/module2/task2.1.js"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,8 @@
   },
   "homepage": "https://github.com/ahlinist/nodejs-mentoring#readme",
   "dependencies": {
-    "csvtojson": "^2.0.10"
+    "csvtojson": "^2.0.10",
+    "express": "^4.17.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
