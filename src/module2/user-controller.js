@@ -7,7 +7,17 @@ const port = 3000;
 
 app.use(bodyParser.json());
 
-//TODO: implement autosuggest
+app.get('/users/suggest', (req, res) => {
+  const q = req.query.q;
+  const limit = parseInt(req.query.limit);
+  const logins = userService.suggest(q, limit);
+  if (logins) {
+      res.send(logins);
+  } else {
+      res.status(404);
+      res.send("Nothing to suggest");
+  }
+});
 
 app.get('/users/:id', (req, res) => {
     const id = req.params.id;
@@ -29,7 +39,7 @@ app.post('/users', (req, res) => {
   });
 
 app.put('/users/:id', (req, res) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const user = parseUser(req.body);
     let persistentUser;
 

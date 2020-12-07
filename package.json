@@ -8,7 +8,7 @@
     "test": "npm test",
     "task1": "nodemon --exec babel-node src/module1/task1.js",
     "task2": "nodemon --exec babel-node src/module1/task2.js",
-    "task3": "nodemon --exec babel-node src/module2/task2.1.js"
+    "task3": "nodemon --exec babel-node src/module2/user-controller.js"
   },
   "repository": {
     "type": "git",

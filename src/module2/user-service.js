@@ -1,7 +1,7 @@
 const users = {};
 
 const create = (user) => {
-    const id = Math.max(Object.keys(users)) + 1; //TODO: use uuid
+    const id = (Object.keys(users).length + 1).toString();
     user.id = id; 
     users[id] = user;
     return user;
@@ -28,4 +28,14 @@ const remove = id => {
     }
 };
 
-export {create, get, update, exists, remove};
+const suggest = (query, limit) => {
+    console.log(query)
+    return Object.values(users)
+        .filter(user => !user.isDeleted)
+        .map(user => user.login)
+        .sort()
+        .filter(login => login.includes(query))
+        .slice(0, limit);
+};
+
+export {create, get, update, exists, remove, suggest};
