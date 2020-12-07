@@ -22,6 +22,12 @@ const exists = id => {
     return users.hasOwnProperty(id);
 };
 
+const existsByLogin = login => {
+    return Object.values(users)
+        .map(user => user.login)
+        .includes(login);
+};
+
 const remove = id => {
     if (exists(id)) {
         users[id].isDeleted = true;
@@ -38,4 +44,4 @@ const suggest = (query, limit) => {
         .slice(0, limit);
 };
 
-export {create, get, update, exists, remove, suggest};
+export {create, get, update, exists, remove, suggest, existsByLogin};

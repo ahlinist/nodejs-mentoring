@@ -22,7 +22,8 @@
   "homepage": "https://github.com/ahlinist/nodejs-mentoring#readme",
   "dependencies": {
     "csvtojson": "^2.0.10",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "joi": "^17.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",

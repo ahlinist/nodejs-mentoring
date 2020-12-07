@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import * as userService from "./user-service.js";
+import * as validator from "./validator.js";
 
 const app = express();
 const port = 3000;
@@ -32,10 +33,25 @@ app.get('/users/:id', (req, res) => {
 
 app.post('/users', (req, res) => {
     const user = parseUser(req.body);
-    const persistentUser = userService.create(user);
-    res.status(201);
-    res.location(`/users/${persistentUser.id}`);
-    res.send(persistentUser);
+    const validationError = validator.user(user);
+    let response;
+
+    if (validationError) {
+      res.status(400);
+      response = validationError;
+    } else {
+      if (userService.existsByLogin(user.login)) {
+        res.status(209);
+        response = [`User with login '${user.login}' already exists`];
+      } else {
+        const persistentUser = userService.create(user);
+        res.status(201);
+        res.location(`/users/${persistentUser.id}`);
+        response = persistentUser;
+      }
+    }
+
+    res.send(response);
   });
 
 app.put('/users/:id', (req, res) => {
