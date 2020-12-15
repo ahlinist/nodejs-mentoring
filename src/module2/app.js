@@ -7,7 +7,7 @@ const port = 3000;
 
 app.use(bodyParser.json());
 
-app.use("/users", userRouter)
+app.use("/users", userRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
