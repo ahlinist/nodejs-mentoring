@@ -44,4 +44,4 @@ const suggest = (query, limit) => {
         .slice(0, limit);
 };
 
-export {create, get, update, exists, remove, suggest, existsByLogin};
+module.exports = {create, get, update, exists, remove, suggest, existsByLogin};

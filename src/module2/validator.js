@@ -1,4 +1,4 @@
-import Joi from "joi";
+const Joi = require("joi");
 
 const userSchema = Joi.object({
     login: Joi.string()
@@ -25,4 +25,4 @@ const user = payload => {
     }
 };
 
-export {user};
+module.exports = { user };

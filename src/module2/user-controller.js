@@ -1,14 +1,7 @@
-import express from "express";
-import bodyParser from "body-parser";
-import * as userService from "./user-service.js";
-import * as validator from "./validator.js";
+const userService = require("./user-service.js");
+const validator = require("./validator.js");
 
-const app = express();
-const port = 3000;
-
-app.use(bodyParser.json());
-
-app.get('/users/suggest', (req, res) => {
+const suggest = (req, res) => {
   const q = req.query.q;
   const limit = parseInt(req.query.limit);
   const logins = userService.suggest(q, limit);
@@ -18,66 +11,65 @@ app.get('/users/suggest', (req, res) => {
       res.status(404);
       res.send("Nothing to suggest");
   }
-});
+};
 
-app.get('/users/:id', (req, res) => {
-    const id = req.params.id;
-    const user = userService.get(id);
-    if (user) {
-        res.send(user);
+const get = (req, res) => {
+  const id = req.params.id;
+  const user = userService.get(id);
+  if (user) {
+      res.send(user);
+  } else {
+      createError.NotFound
+      res.status(404);
+      res.send(`No user found with id ${id}`);
+  }
+};
+
+const create = (req, res) => {
+  const user = parseUser(req.body);
+  const validationError = validator.user(user);
+  let response;
+
+  if (validationError) {
+    res.status(400);
+    response = validationError;
+  } else {
+    if (userService.existsByLogin(user.login)) {
+      res.status(209);
+      response = [`User with login '${user.login}' already exists`];
     } else {
-        res.status(404);
-        res.send(`No user found with id ${id}`);
+      const persistentUser = userService.create(user);
+      res.status(201);
+      res.location(`/users/${persistentUser.id}`);
+      response = persistentUser;
     }
-});
+  }
 
-app.post('/users', (req, res) => {
-    const user = parseUser(req.body);
-    const validationError = validator.user(user);
-    let response;
+  res.send(response);
+};
 
-    if (validationError) {
-      res.status(400);
-      response = validationError;
-    } else {
-      if (userService.existsByLogin(user.login)) {
-        res.status(209);
-        response = [`User with login '${user.login}' already exists`];
-      } else {
-        const persistentUser = userService.create(user);
-        res.status(201);
-        res.location(`/users/${persistentUser.id}`);
-        response = persistentUser;
-      }
-    }
+const update = (req, res) => {
+  const id = req.params.id;
+  const user = parseUser(req.body);
+  let persistentUser;
 
-    res.send(response);
-  });
+  if (userService.exists(id)) {
+      persistentUser = userService.update(id, user);
+      res.status(204);
+  } else {
+      persistentUser = userService.create(user);
+      res.location(`/users/${persistentUser.id}`);
+      res.status(201);
+  }
 
-app.put('/users/:id', (req, res) => {
-    const id = req.params.id;
-    const user = parseUser(req.body);
-    let persistentUser;
+  res.send(persistentUser);
+};
 
-    if (userService.exists(id)) {
-        persistentUser = userService.update(id, user);
-        res.status(204);
-    } else {
-        persistentUser = userService.create(user);
-        res.location(`/users/${persistentUser.id}`);
-        res.status(201);
-    }
-
-    res.send(persistentUser);
-  });
-
-  app.delete('/users/:id', (req, res) => {
-    const id = req.params.id;
-
-    userService.remove(id);
-    res.status(204);
-    res.send();
-  });
+const remove = (req, res) => {
+  userService.remove(req.params.id);
+  res.status(204);
+  res.send();
+};
 
 const parseUser = payload => {
     return {
@@ -87,6 +79,4 @@ const parseUser = payload => {
     };
 };
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-});
+module.exports = { suggest, get, update, create, remove };
