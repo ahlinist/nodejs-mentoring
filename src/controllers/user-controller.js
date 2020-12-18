@@ -1,5 +1,5 @@
-const userService = require("./user-service.js");
-const validator = require("./validator.js");
+const userService = require("../services/user-service.js");
+const validator = require("../utils/validator.js");
 const createError = require("http-errors");
 const { StatusCodes } = require("http-status-codes");
 
