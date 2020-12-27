@@ -1,53 +1,49 @@
 const userService = require("../services/user-service.js");
 const validator = require("../utils/validator.js");
-const createError = require("http-errors");
 const { StatusCodes } = require("http-status-codes");
 
-const suggest = (req, res) => {
+const suggest = async (req, res) => {
   const q = req.query.q;
   const limit = parseInt(req.query.limit);
-  const logins = userService.suggest(q, limit);
-  res.send(logins || createError.NotFound("Nothing to suggest"));
+  const logins = await userService.suggest(q, limit);
+  logins ? res.send(logins) : res.status(StatusCodes.NOT_FOUND).send("Nothing to suggest");
 };
 
-const get = (req, res) => {
+const get = async (req, res) => {
   const id = req.params.id;
-  const user = userService.get(id);
-  res.send(user || createError.NotFound(`No user found with id ${id}`));
+  const user = await userService.get(id);
+  user ? res.send(user) : res.status(StatusCodes.NOT_FOUND).send(`No user found with id ${id}`);
 };
 
-const create = (req, res) => {
+const create = async (req, res) => {
   const user = parseUser(req.body);
   const validationError = validator.user(user);
 
   if (validationError) {
-    res.send(createError.BadRequest(validationError));
+    res.status(StatusCodes.BAD_REQUEST).send(validationError);
   } else {
-    if (userService.existsByLogin(user.login)) {
-      res.send(createError.Conflict([`User with login '${user.login}' already exists`]));
+    if (await userService.existsByLogin(user.login)) {
+      res.status(StatusCodes.CONFLICT).send([`User with login '${user.login}' already exists`]);
     } else {
-      res.status(StatusCodes.CREATED).send(userService.create(user));
+      res.status(StatusCodes.CREATED).send(await userService.create(user));
     }
   }
 };
 
-const update = (req, res) => {
+const update = async (req, res) => {
   const id = req.params.id;
   const user = parseUser(req.body);
 
-  if (userService.exists(id)) {
-      res.status(StatusCodes.NO_CONTENT)
-        .send(userService.update(id, user));
+  if (await userService.get(id)) {
+      res.status(StatusCodes.NO_CONTENT).send(await userService.update(id, user));
   } else {
-      res.status(StatusCodes.CREATED)
-        .send(userService.create(user));
+      res.status(StatusCodes.CREATED).send(await userService.create(user));
   }
 };
 
-const remove = (req, res) => {
-  userService.remove(req.params.id);
-  res.status(StatusCodes.NO_CONTENT)
-    .send();
+const remove = async (req, res) => {
+  await userService.remove(req.params.id);
+  res.status(StatusCodes.NO_CONTENT).send();
 };
 
 const parseUser = payload => {

@@ -1,47 +1,29 @@
-const users = {};
+const userDao = require("../dao/user-dao.js");
 
-const create = (user) => {
-    const id = (Object.keys(users).length + 1).toString();
-    user.id = id; 
-    users[id] = user;
-    return user;
+const create =  (user) => {
+    return userDao.create(user);
 };
 
 const get = id => {
-    const user = users[id];
-    return user && user.isDeleted ? null : user
+    return userDao.getById(id);
 };
 
 const update = (id, user) => {
-    user.id = id;
-    users[id] = user;
-    return user;
-};
-
-const exists = id => {
-    return users.hasOwnProperty(id);
+    return userDao.update(id, user);
 };
 
 const existsByLogin = login => {
-    return Object.values(users)
-        .map(user => user.login)
-        .includes(login);
+    return userDao.existsByLogin(login);
 };
 
 const remove = id => {
-    if (exists(id)) {
-        users[id].isDeleted = true;
-    }
+    userDao.remove(id);
 };
 
 const suggest = (query, limit) => {
-    console.log(query)
-    return Object.values(users)
-        .filter(user => !user.isDeleted)
-        .map(user => user.login)
-        .sort()
-        .filter(login => login.includes(query))
-        .slice(0, limit);
+    return userDao.suggest(query, limit)
+      .then(users => users.map(user => user.login))
+      .then(logins => logins.sort());
 };
 
-module.exports = {create, get, update, exists, remove, suggest, existsByLogin};
+module.exports = {create, get, update, remove, suggest, existsByLogin};
