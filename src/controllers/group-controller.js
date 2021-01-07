@@ -10,7 +10,7 @@ const get = async (req, res) => {
 
 const create = async (req, res) => {
   const group = parseGroup(req.body);
-  const validationError = await validator.group(group);
+  const validationError = validator.group(group);
 
   if (validationError) {
     res.status(StatusCodes.BAD_REQUEST).send(validationError);
