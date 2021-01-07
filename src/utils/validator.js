@@ -1,5 +1,7 @@
 const Joi = require("joi");
 
+const allowedPermissions = ["READ", "WRITE", "DELETE", "SHARE", "UPLOAD_FILES"];
+
 const userSchema = Joi.object({
     login: Joi.string()
         .required(),
@@ -14,15 +16,32 @@ const userSchema = Joi.object({
         .required(),
 });
 
+const groupSchema = Joi.object({
+    name: Joi.string()
+        .required(),
+    permissions: Joi.array()
+        .error(() => new Error(`Only the following permissions are supported: ${allowedPermissions}`))
+        .items(...allowedPermissions)
+        .required()
+});
+
 const user = payload => {
-    const validation = userSchema.validate(payload);
+    return validate(payload, userSchema);
+};
+
+
+const group = payload => {
+    return validate(payload, groupSchema);
+};
+
+const validate = (payload, schema) => {
+    const validation = schema.validate(payload);
 
     if (validation.error) {
-        return validation
-            .error
-            .details
-            .map(detail => detail.message);
+        console.log(`Errors: \n${validation.error}`)
+        const details = validation.error.details;
+        return details ? details.map(detail => detail.message) : `${validation.error}`;
     }
 };
 
-module.exports = { user };
+module.exports = { user, group };
