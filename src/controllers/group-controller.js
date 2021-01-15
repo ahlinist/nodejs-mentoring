@@ -50,4 +50,11 @@ const getAll = async (req, res) => {
   res.send(await groupService.getAll());
 };
 
-module.exports = { get, getAll, update, create, remove };
+const addUsersToGroup = async (req, res) => {
+  const groupId = parseInt(req.params.id);
+  const userIds = req.body;
+  await groupService.addUsersToGroup(userIds, groupId);
+  res.status(StatusCodes.NO_CONTENT).send();
+};
+
+module.exports = { get, getAll, update, create, remove, addUsersToGroup };

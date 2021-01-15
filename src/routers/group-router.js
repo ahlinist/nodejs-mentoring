@@ -13,4 +13,6 @@ router.put("/:id", groupController.update);
 
 router.delete("/:id", groupController.remove);
 
+router.put("/:id/users", groupController.addUsersToGroup);
+
 module.exports = router;

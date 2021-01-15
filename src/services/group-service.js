@@ -1,4 +1,5 @@
 const groupDao = require("../dao/group-dao.js");
+const userGroupDao = require("../dao/user-group-dao.js");
 
 const allowedPermissions = ["READ", "WRITE", "DELETE", "SHARE", "UPLOAD_FILES"];
 
@@ -28,4 +29,8 @@ const getAll = () => {
     return groupDao.getAll();
 };
 
-module.exports = {create, get, update, remove, getAll};
+const addUsersToGroup = (userIds, groupId) => {
+    return userGroupDao.addUsersToGroup(userIds, groupId);
+};
+
+module.exports = {create, get, update, remove, getAll, addUsersToGroup};
