@@ -2,13 +2,14 @@ const groupService = require("../services/group-service.js");
 const validator = require("../utils/validator.js");
 const { StatusCodes } = require("http-status-codes");
 
-const get = async (req, res) => {
+const get = async (req, res, next) => {
   const id = req.params.id;
   const group = await groupService.get(id);
   group ? res.send(group) : res.status(StatusCodes.NOT_FOUND).send(`No group found with id ${id}`);
+  next();
 };
 
-const create = async (req, res) => {
+const create = async (req, res, next) => {
   const group = parseGroup(req.body);
   const validationError = validator.group(group);
 
@@ -21,9 +22,10 @@ const create = async (req, res) => {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
     }
   }
+  next();
 };
 
-const update = async (req, res) => {
+const update = async (req, res, next) => {
   const id = req.params.id;
   const group = parseGroup(req.body);
 
@@ -32,11 +34,13 @@ const update = async (req, res) => {
   } else {
       res.status(StatusCodes.CREATED).send(await groupService.create(group));
   }
+  next();
 };
 
-const remove = async (req, res) => {
+const remove = async (req, res, next) => {
   await groupService.remove(req.params.id);
   res.status(StatusCodes.NO_CONTENT).send();
+  next();
 };
 
 const parseGroup = payload => {
@@ -46,15 +50,17 @@ const parseGroup = payload => {
     };
 };
 
-const getAll = async (req, res) => {
+const getAll = async (req, res, next) => {
   res.send(await groupService.getAll());
+  next();
 };
 
-const addUsersToGroup = async (req, res) => {
+const addUsersToGroup = async (req, res, next) => {
   const groupId = parseInt(req.params.id);
   const userIds = req.body;
   await groupService.addUsersToGroup(userIds, groupId);
   res.status(StatusCodes.NO_CONTENT).send();
+  next();
 };
 
 module.exports = { get, getAll, update, create, remove, addUsersToGroup };

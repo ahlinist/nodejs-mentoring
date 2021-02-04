@@ -2,20 +2,22 @@ const userService = require("../services/user-service.js");
 const validator = require("../utils/validator.js");
 const { StatusCodes } = require("http-status-codes");
 
-const suggest = async (req, res) => {
+const suggest = async (req, res, next) => {
   const q = req.query.q;
   const limit = parseInt(req.query.limit);
   const logins = await userService.suggest(q, limit);
   logins ? res.send(logins) : res.status(StatusCodes.NOT_FOUND).send("Nothing to suggest");
+  next();
 };
 
-const get = async (req, res) => {
+const get = async (req, res, next) => {
   const id = req.params.id;
   const user = await userService.get(id);
   user ? res.send(user) : res.status(StatusCodes.NOT_FOUND).send(`No user found with id ${id}`);
+  next();
 };
 
-const create = async (req, res) => {
+const create = async (req, res, next) => {
   const user = parseUser(req.body);
   const validationError = validator.user(user);
 
@@ -28,9 +30,10 @@ const create = async (req, res) => {
       res.status(StatusCodes.CREATED).send(await userService.create(user));
     }
   }
+  next();
 };
 
-const update = async (req, res) => {
+const update = async (req, res, next) => {
   const id = req.params.id;
   const user = parseUser(req.body);
 
@@ -39,11 +42,13 @@ const update = async (req, res) => {
   } else {
       res.status(StatusCodes.CREATED).send(await userService.create(user));
   }
+  next();
 };
 
-const remove = async (req, res) => {
+const remove = async (req, res, next) => {
   await userService.remove(req.params.id);
   res.status(StatusCodes.NO_CONTENT).send();
+  next();
 };
 
 const parseUser = payload => {
