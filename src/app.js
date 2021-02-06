@@ -6,8 +6,14 @@ const groupRouter = require("./routers/group-router.js");
 const app = express();
 const port = 3000;
 
-app.use(bodyParser.json());
+const requestInfoLogger = function(req, res, next) {
+  console.log(`Request method: ${req.method}`);
+  console.log(`Request params: ${JSON.stringify(req.query)}`);
+  next();
+}
 
+app.use(bodyParser.json());
+app.use(requestInfoLogger);
 app.use("/users", userRouter);
 app.use("/groups", groupRouter);
 
