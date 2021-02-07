@@ -14,6 +14,7 @@ const requestInfoLogger = (req, res, next) => {
 
 const errorHandler = (err, req, res, next) => {
   console.log(`OMG! Error! ${err}`);
+  console.log(`Request url: ${req.url}\nRequest method: ${req.method}\nRequest params: ${JSON.stringify(req.query)}`);
   res.status(500).send("With a terrible regret we inform you, oh dear user, that something went wrong. Please keep patience. This is the way.");
   next();
 }
