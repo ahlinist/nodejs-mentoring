@@ -5,6 +5,7 @@ const groupRouter = require("./routers/group-router.js");
 const authRouter = require("./routers/auth-router.js");
 const jwt = require('jsonwebtoken');
 const { StatusCodes } = require("http-status-codes");
+const cors = require('cors')
 
 const app = express();
 const port = 3000;
@@ -46,6 +47,7 @@ const jwtFilter = (req, res, next) => {
 }
 
 app.use(bodyParser.json());
+app.use(cors());
 app.use(requestInfoLogger);
 
 app.use(/^\/(?!auth\/login).*/, jwtFilter);
