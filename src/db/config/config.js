@@ -1,4 +1,6 @@
-const dbUrl = 'postgres://postgres:root@127.0.0.1:5432/mentoring';
+const { DB_HOST, DB_USER, DB_PASS } = process.env;
+
+const dbUrl = `postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:5432/mentoring`;
 
 module.exports = {
   development: {
