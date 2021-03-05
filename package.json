@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "npm test",
+    "test": "jest",
     "start": "nodemon src/app.js",
     "start-prod": "node src/app.js"
   },
@@ -20,6 +20,7 @@
   "homepage": "https://github.com/ahlinist/nodejs-mentoring#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "http-status-codes": "^2.1.4",
     "joi": "^17.3.0",
@@ -28,5 +29,8 @@
     "pg-hstore": "^2.3.3",
     "sequelize": "^6.3.5",
     "sequelize-cli": "^6.2.0"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
   }
 }
