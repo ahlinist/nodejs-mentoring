@@ -1,3 +1,4 @@
+const controller = require('./user-controller.js');
 const { get } = require('../services/user-service.js');
 
 jest.mock('../services/user-service.js', () => {
@@ -20,7 +21,7 @@ test('should respond with user object', async () => {
 
     get.mockReturnValueOnce(user)
 
-    await require('./user-controller.js').get(mockRequest, mockResponse, mockNext);
+    await controller.get(mockRequest, mockResponse, mockNext);
 
     expect(get).toHaveBeenCalledTimes(1);
     expect(get).toHaveBeenCalledWith(id);
@@ -39,7 +40,7 @@ test('should return 404 as of missing user', async () => {
 
   mockStatus.mockReturnValueOnce(mockResponse);
 
-  await require('./user-controller.js').get(mockRequest, mockResponse, mockNext);
+  await controller.get(mockRequest, mockResponse, mockNext);
 
   expect(get).toHaveBeenCalledTimes(1);
   expect(get).toHaveBeenCalledWith(id);
